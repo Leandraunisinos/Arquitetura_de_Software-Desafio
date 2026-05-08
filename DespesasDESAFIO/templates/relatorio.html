@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Relatório de Despesas</h2>
+    
+    <div class="total-box" style="margin-bottom: 20px;">
+        <h3>💰 Total Geral de Todas as Despesas</h3>
+        <div class="total-value">R$ {{ "%.2f"|format(total_geral) }}</div>
+    </div>
+    
+    <h3>🔍 Filtrar por Período</h3>
+    <form method="GET" action="/relatorio" style="margin-bottom: 20px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="data_inicio">Data Início</label>
+                <input type="date" id="data_inicio" name="data_inicio" value="{{ data_inicio }}">
+            </div>
+            <div class="form-group">
+                <label for="data_fim">Data Fim</label>
+                <input type="date" id="data_fim" name="data_fim" value="{{ data_fim }}">
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+            </div>
+        </div>
+    </form>
+    
+    {% if total_periodo is not none %}
+    <div class="total-periodo">
+        <strong>📅 Total no período de {{ data_inicio }} a {{ data_fim }}:</strong>
+        <span style="font-size: 1.5rem; font-weight: bold; margin-left: 10px;">R$ {{ "%.2f"|format(total_periodo) }}</span>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>📋 Despesas {{ "do Período" if data_inicio and data_fim else "Cadastradas" }}</h2>
+    {% if despesas_periodo %}
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for despesa in despesas_periodo %}
+            <tr>
+                <td>{{ despesa.descricao }}</td>
+                <td>R$ {{ "%.2f"|format(despesa.valor) }}</td>
+                <td>{{ despesa.data[:10] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-message">
+        <p>📭 Nenhuma despesa encontrada neste período.</p>
+    </div>
+    
+</div>

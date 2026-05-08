@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>➕ Nova Despesa</h2>
+    <form method="POST" action="/cadastrar">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="descricao">Descrição *</label>
+                <input type="text" id="descricao" name="descricao" placeholder="Ex: Supermercado, Combustível..." required>
+            </div>
+            <div class="form-group">
+                <label for="valor">Valor (R$) *</label>
+                <input type="number" id="valor" name="valor" step="0.01" placeholder="0,00" required>
+            </div>
+            <div class="form-group">
+                <label for="data">Data *</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary">➕ Cadastrar Despesa</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="form-row">
+        <div class="total-box">
+            <h3>💰 Total de Despesas</h3>
+            <div class="total-value">R$ {{ "%.2f"|format(total) }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📋 Lista de Despesas</h2>
+    {% if despesas %}
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for despesa in despesas %}
+            <tr>
+                <td>{{ despesa.descricao }}</td>
+                <td>R$ {{ "%.2f"|format(despesa.valor) }}</td>
+                <td>{{ despesa.data[:10] }}</td>
+                <td>
+                    <form method="POST" action="/remover/{{ despesa.id }}" class="delete-form" onsubmit="return confirm('Tem certeza que deseja remover esta despesa?')">
+                        <button type="submit" class="btn btn-danger">🗑️ Remover</button>
+                    </form>
+                </td>
+            </tr>
+    
+        </tbody>
+    </table>
+    
+    <div class="empty-message">
+        <p>📭 Nenhuma despesa cadastrada ainda.</p>
+        <p>Use o formulário acima para adicionar sua primeira despesa!</p>
+    </div>
+    
+</div>
+
+<script>
+    // Preenche a data atual automaticamente
+    document.getElementById('data').valueAsDate = new Date();
+</script>
